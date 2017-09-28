@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.spring.boot.zk.autconfigure.ZKAutoConfigure,\
+  com.spring.boot.zk.autconfigure.ZKServer
