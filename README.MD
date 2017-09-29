@@ -35,7 +35,8 @@ spring:
       password: liuhailin
 ```
 
-#### Example
+#### Example [例子](/example "example")
+
 ```java
 @Component
 public class Example {
