@@ -1,16 +1,9 @@
 package com.spring.boot.zk.autconfigure;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.framework.api.ACLProvider;
 import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.apache.zookeeper.ZooDefs;
-import org.apache.zookeeper.data.ACL;
-import org.apache.zookeeper.data.Id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -30,10 +23,10 @@ public class ZKServer {
     @Autowired
     private ZKCoinfig config;
 
-    private RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
+    private RetryPolicy retryPolicy = new ExponentialBackoffRetry( 1000, 3 );
 
     @Bean
-    public CuratorFramework createCuratorClient(){
+    public CuratorFramework createCuratorClient() {
         /**
          * //默认创建的根节点是没有做权限控制的--需要自己手动加权限???---- ACLProvider aclProvider = new
          * ACLProvider() { private List<ACL> acl ;
@@ -46,29 +39,16 @@ public class ZKServer {
          *           }; String scheme = "digest"; byte[] auth =
          *           "admin:admin".getBytes();
          */
-        CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder().connectString(config.getCluster())
-            .retryPolicy(retryPolicy).sessionTimeoutMs(config.getSessionTimeOut())
-            .connectionTimeoutMs(config.getConnectionTimeOut());
+        CuratorFrameworkFactory.Builder builder = CuratorFrameworkFactory.builder().connectString( config.getCluster() )
+            .retryPolicy( retryPolicy ).sessionTimeoutMs( config.getSessionTimeOut() )
+            .connectionTimeoutMs( config.getConnectionTimeOut() );
 
-        if (!StringUtils.isEmpty(config.getNameSpace())) {
-            builder.namespace(config.getNameSpace());
+        if (!StringUtils.isEmpty( config.getNameSpace() )) {
+            builder.namespace( config.getNameSpace() );
         }
-        if(!StringUtils.isEmpty(config.getAcl())){
-            builder.aclProvider(new ACLProvider() {
-
-                private List<ACL> acl = Lists.newArrayList();
-
-                @Override
-                public List<ACL> getDefaultAcl() {
-                    acl.add(new ACL(ZooDefs.Perms.ALL, new Id("auth", "liuhailin")));
-                    return acl;
-                }
-
-                @Override
-                public List<ACL> getAclForPath(String s) {
-                    return acl;
-                }
-            });
+        if (!StringUtils.isEmpty( config.getUserName() ) && !StringUtils.isEmpty( config.getPassword() )) {
+            builder.authorization( "digest", config.buildDigestString().getBytes() );
+            builder.aclProvider( config.getACLProvider() );
         }
 
         CuratorFramework client = builder.build();
@@ -80,13 +60,5 @@ public class ZKServer {
         }
         return client;
     }
-
-
-    //
-    //@PreDestroy
-    //public void close() {
-    //    // client.close();
-    //    CloseableUtils.closeQuietly(client);
-    //}
 
 }

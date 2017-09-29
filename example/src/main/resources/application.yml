@@ -4,8 +4,7 @@ spring:
       enable: true
       cluster: 127.0.0.1:2181
       nameSpace: example
-      sessionTimeOut: 3000
+      sessionTimeOut: 60000
       connectionTimeOut: 30000
-      acl: liuhailin
-
-
+      userName: liuhailin
+      password: liuhailin

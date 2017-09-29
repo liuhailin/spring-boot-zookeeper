@@ -122,6 +122,7 @@ public class ZKClientImpl implements IZKClient {
         return new String(data, Charset.forName("utf8"));
     }
 
+    @Override
     public boolean checkNode(String path) {
         boolean exist = false;
         try {
@@ -133,9 +134,11 @@ public class ZKClientImpl implements IZKClient {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        log.info( "[CheckNode] Path:{} is exist?{}",path, exist);
         return exist;
     }
 
+    @Override
     public List<String> getNodeChildren(String path) {
         List<String> children = Lists.newArrayList();
         try {
@@ -154,6 +157,7 @@ public class ZKClientImpl implements IZKClient {
         try {
             this.client.delete().guaranteed().deletingChildrenIfNeeded().withVersion(-1).forPath(path);
             isSuccess = true;
+            log.info( "[DeleteNode] path:{},{}",path,isSuccess );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -166,6 +170,7 @@ public class ZKClientImpl implements IZKClient {
         try {
             this.client.delete().deletingChildrenIfNeeded().withVersion(version).forPath(path);
             isSuccess = true;
+            log.info( "[DeleteNode] path:{},{}",path,isSuccess );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -180,6 +185,7 @@ public class ZKClientImpl implements IZKClient {
             if (stat != null) {
                 result = value;
             }
+            log.info( "[UpdateNode] path:{},value:{}",path,value );
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -194,6 +200,7 @@ public class ZKClientImpl implements IZKClient {
             if (stat != null) {
                 result = value;
             }
+            log.info( "[UpdateNode] path:{},value:{}",path,value );
         } catch (Exception e) {
             e.printStackTrace();
         }

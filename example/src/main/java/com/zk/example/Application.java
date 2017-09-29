@@ -10,6 +10,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        String[] args_new = new String[args.length + 1];
+        System.arraycopy( args, 0, args_new, 0, args.length );
+        args_new[args.length] = "-Djava.security.egd=file:/dev/./urandom";
+        SpringApplication.run( Application.class, args_new );
     }
 }
